@@ -1,0 +1,45 @@
+{% extends 'BankData/pagetemplate.html' %}
+
+{% block content %}
+
+<div class="transaction-table">
+
+    <table>
+        <tbody>
+            <tr>
+                <td>Start Date: </td>
+                <td><input id="startDate" name="startDate" type="text"></td>
+                <td>End Date: </td>
+                <td><input id="endDate" name="endDate" type="text"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Details</th>
+                <th>Posting Date</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Type</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in transaction_list %}
+            <tr>
+                <td>{{ item.details }}</td>
+                <td>{{ item.postingDate }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.amount }}</td>
+                <td>{{ item.type }}</td>
+                <td>{{ item.balance }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

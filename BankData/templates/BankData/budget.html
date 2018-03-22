@@ -1,0 +1,147 @@
+{% extends 'BankData/pagetemplate.html' %}
+
+{% block content %}
+
+<!-- Budget Forms -->
+<div class="forms">
+
+    <!-- Set Budget -->
+    <div class="col-md-2">
+        <h4>Set Budget</h4>
+        <form method="POST" class="post-form" id="budget-form-id">
+            {% csrf_token %}
+            {{ ba_form.as_p }}
+            <button type="submit" name ="submit" class="save btn btn-default" id=setButton onclick="updateBar(), updatePie()"> Save </button>
+        </form>
+    </div>
+
+    <!-- Displays Budget -->
+    <div class="col-md-1">
+        <h4>Budget: {{ budget_max.amount }}</h4>
+    </div>
+
+    <!-- Add Category -->
+    <div class="col-md-2">
+        <h4>Add Category</h4>
+        <form method="POST" class="post-form" id="category-form-id">
+            {% csrf_token %}
+            {{ bc_form.as_p }}
+            <button type="submit" name ="add" class="save btn btn-default"onclick="updateBar(), updatePie()"> Add </button>
+        </form>
+    </div>
+
+    <!-- Delete Category -->
+    <div class="col-md-2">
+        <h4>Delete Category</h4>
+        <form method="POST" class="post-form" id="delete-form-id">
+            {% csrf_token %}
+            {{ dl_form.as_p }}
+            <button type="submit" name ="delete" class="save btn btn-default" onclick="updateBar(), updatePie()"> Delete </button>
+        </form>
+    </div>
+
+</div>
+
+<!-- Table of budget categories and associated amounts -->
+<div class="data">
+
+    <table id="budget-table">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in budget_category_list %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+
+<!-- Bargraph showing budget data -->
+<div class="col-md-6">
+    <canvas id="BarChart" height="100"></canvas>
+</div>
+
+
+<!-- Bargraph Construction Script -->
+<script>
+    var g_labels = "{{ bcl_names }}".replace(/u&#39;/g,"").replace(/&#39;/g,"").replace("[","").replace("]","").replace(" ","").split(',');
+    var g_data = {{ bcl_values }};
+    var max = {{ budget_max.amount }};
+    var g_free = max - g_data.reduce(function(a, b) {return a + b; }, 0);
+    g_data.push(g_free);
+    g_labels.push("Free");
+    console.log(g_labels);
+    console.log(g_data);
+
+    var ctx = document.getElementById("BarChart");
+    var BarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: g_labels,
+            datasets: [{
+                label: 'Amount per category',
+                data: g_data
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    function updateBar() {
+        BarChart.update();
+    }
+
+    $('setButton').click( BarChart.update() )
+
+</script>
+
+<!-- Piechart showing budget data -->
+<div class="col-md-6">
+    <canvas id ="PieChart" height="100"></canvas>
+</div>
+
+<!-- Piechart Construction Script -->
+<script>
+    var g_labels = "{{ bcl_names }}".replace(/u&#39;/g,"").replace(/&#39;/g,"").replace("[","").replace("]","").replace(" ","").split(',');
+    var g_data = {{ bcl_values }};
+    var max = {{ budget_max.amount }};
+    var g_free = max - g_data.reduce(function(a, b) {return a + b; }, 0);
+    g_data.push(g_free);
+    g_labels.push("Free");
+
+    var ctx = document.getElementById("PieChart");
+    var PieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: g_labels,
+            datasets: [{
+                label: 'Amount per category',
+                data: g_data
+            }]
+        }
+    });
+
+    function updatePie() {
+        PieChart.update();
+    }
+
+</script>
+
+
+{% endblock %}

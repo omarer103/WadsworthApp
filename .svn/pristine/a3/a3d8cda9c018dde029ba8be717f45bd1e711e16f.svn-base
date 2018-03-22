@@ -1,0 +1,38 @@
+.navbar-default {
+    background-color: #49dd3b !important;
+    padding: 5px 20px 5px 20px;
+}
+
+.navbar-brand {
+    position: fixed;
+    color: #ffffff !important;
+    font-size: 200% !important;
+}
+
+.navbar-collapse {
+    font-size: 150% !important;
+    background-color: #fffff !important;
+}
+
+.navbar .nav > li > a {
+    color: #FFF !important;
+}
+
+
+.transaction-table {
+    padding: 0px 15px 15px 15px;
+}
+
+.th, td {
+    padding: 10px 50px 10px 0px !important;
+}
+
+.forms {
+    padding-left: 15px;
+}
+
+.data {
+    padding: 15px 15px 15px 30px;
+    width: 50%;
+}
+
